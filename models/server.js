@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-
+const bodyParser = require('body-parser');
 
 class Server{
 
@@ -8,7 +8,7 @@ class Server{
     
     this.app  = express()
     this.port = process.env.PORT 
-    this.usuariosPath = '/api/usuarios';
+    this.usuariosPath = '/form';
     
     // Middlewares
     this.middlewares()
@@ -27,7 +27,9 @@ class Server{
         this.app.use(express.static('public'))
        
         //Lectura y parseo del body cualquier informacion que pase del body a mi bakend sera en json
-         this.app.use(express.json())
+        
+
+         this.app.use(bodyParser.urlencoded({ extended: true }));
     }
 
     routes(){

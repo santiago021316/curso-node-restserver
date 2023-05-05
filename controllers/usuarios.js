@@ -1,23 +1,20 @@
 const {response,request}  = require('express')
+const path = require('path')
 
 
 const usuariosGet = (req = request, res = response) => {
-
-    const query = req.query;
   
-    res.json({
-    msg:'get API - controlado Get',
-    query
-    })
+    const route = path.join(__dirname , '..','public','form.html')
+    res.sendFile(route)
 }
 
 const usuariosPost = (req = request, res = response) => {
-    const {nombre,edad} = req.body
-    
+
+
+    console.log(req.body)
     res.json({
-    msg:'get API - controlador Post',
-    nombre,
-    edad
+    msg:'archivo recibido exitosa mente',
+    
     })
 }
 
