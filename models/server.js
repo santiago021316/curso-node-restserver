@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser');
+const { dbConnection } = require('../database/config');
 
 class Server{
 
@@ -8,17 +9,23 @@ class Server{
     
     this.app  = express()
     this.port = process.env.PORT 
-    this.usuariosPath = '/form';
+    this.usuariosPath = '/api/usuarios';
+
+
+    // conectar a base de datos
+    this.conectarDB();
     
     // Middlewares
     this.middlewares()
     //rutas de mi app
     this.routes()
+}
 
-    
-    
-    
-    }
+
+     async conectarDB() {
+        await dbConnection()
+     }
+
     // directorio publico
     middlewares(){
         this.app.use(cors())
@@ -27,9 +34,9 @@ class Server{
         this.app.use(express.static('public'))
        
         //Lectura y parseo del body cualquier informacion que pase del body a mi bakend sera en json
-        
+        this.app.use(bodyParser.json())
 
-         this.app.use(bodyParser.urlencoded({ extended: true }));
+        //  this.app.use(bodyParser.urlencoded({ extended: true }));
     }
 
     routes(){
