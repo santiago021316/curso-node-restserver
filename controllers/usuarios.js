@@ -30,7 +30,7 @@ const usuariosGet = async(req = request, res = response) => {
 const usuariosPost = async(req = request, res = response) => {
    
     const {nombre,correo,password,rol} = req.body
-    const usuario = new Usuario({nombre,correo,password,rol}) // aca creo la sintaxis de como quedaran en la base de datos
+    const usuario = new Usuario({nombre,correo,rol,password}) // aca creo la sintaxis de como quedaran en la base de datos
    
      const salt = bcryptjs.genSaltSync()   // encriptar la contraseña
      usuario.password = bcryptjs.hashSync(password, salt)// encriptar la contraseña
@@ -70,11 +70,12 @@ const usuariosPatch = (req,res = response) => {
 const usuariosDelete = async(req , res = response) => {
 
     const {id} = req.params;
-
-     // const usuario = await Usuario.findByIdAndDelete(id)  // fisicamente lo borramos pero en mala practica borrar los datos de los usuarios
-
-     const usuario = await Usuario.findByIdAndUpdate(id, {estado:false})
-     res.json(usuario)
+    const usuario = await Usuario.findByIdAndUpdate(id, {estado:false})
+    
+  
+     res.json({
+        usuario
+     })
 }
 
 module.exports = {
