@@ -1,6 +1,7 @@
 const { response } = require('express')
 const   Usuario =  require('../models/usuario')
 const bcryptjs = require('bcryptjs')
+const {googleVerify} = require('../helpers/google.verify')
 
 const { generarJWT } = require('../helpers/generar-JWT')
 
@@ -23,17 +24,14 @@ const login = async(req,res = response) =>{
         }
 
        // si e; usuario esta activo
-
-     
-        if(!usuario.estado){
+         if(!usuario.estado){
             return res.status(400).json({
             msg:'Usuario/Password no son correctos-estado:false' 
             })
         }
 
+        //verificar la contraseñá
        
-
-       //verificar la contraseñá
 
        const validPassword = bcryptjs.compareSync(password,usuario.password)
     
@@ -42,7 +40,7 @@ const login = async(req,res = response) =>{
         return res.status(400).json({
         msg:'Usuario/Password no son correctos-password' 
         })
-    }
+        }
        //generar el jwt
         const token = await generarJWT(usuario.id)
         
@@ -59,6 +57,68 @@ const login = async(req,res = response) =>{
         })
     }
     
+}
+
+const googleSignIn = async(req,res=response) => {
+
+ const { id_token} = req.body;
+
+ try{
+   
+    const {nombre , img , correo} = await  googleVerify(id_token)
+   
+     let usuario = await Usuario.findOne({correo})
+
+    
+
+     if(!usuario){
+   
+     const data = {
+        nombre,
+        correo,
+        password:':P',
+        img,
+        google:true,
+        rol:'USER_ROLE'
+        
+     } 
+
+    
+   
+       usuario = new Usuario(data);
+       await usuario.save();
+      
+     
+     }
+
+     if(!usuario.estado){
+        return res.status(401).json({
+            msg:'hable con el administrador usuario bloqueado'
+        })
+        
+     }
+
+     
+
+     const token = await generarJWT(usuario.id) 
+
+      
+     res.json({
+        usuario,
+        token
+
+     })
+     
+     
+
+ }catch(error){
+ 
+     res.status(400).json({
+        ok:false,
+        msg:'El token no pudo ser leido'
+     })
+ }
+
 
 
 
@@ -66,6 +126,13 @@ const login = async(req,res = response) =>{
 
 
 
+
+
+
+
+
+
 module.exports = {
-    login
+    login,
+    googleSignIn
 }
