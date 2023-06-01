@@ -31,7 +31,7 @@
  </button>
     
 
-    <script src="" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 
     <script>
@@ -42,6 +42,8 @@
         const body = {id_token:response.credential}
 
          fetch('https://curso-node-restserver-production-871f.up.railway.app/api/auth/google',{
+
+            
 
              method:'POST',
              headers:{
@@ -54,7 +56,6 @@
                .then(resp => resp.json())
                .then(resp => {
                 console.log(resp)
-                console.log('usuario logeado')
                 localStorage.setItem('email', resp.usuario.correo)
                })
                 .catch(console.warn);
