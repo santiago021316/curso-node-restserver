@@ -40,8 +40,8 @@
           // console.log('id_token:'+ response.credential);
 
         const body = {id_token:response.credential}
-
-         fetch('https://curso-node-restserver-production-871f.up.railway.app',{
+ 
+         fetch('https://curso-node-restserver-production-871f.up.railway.app/api/auth/google',{
 
              method:'POST',
              headers:{
